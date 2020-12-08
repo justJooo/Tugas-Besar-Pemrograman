@@ -109,6 +109,9 @@ void tukar_poin (int poin){
             scanf("%d",&pilihan);
     }
         }
+	 if(poin == 0){
+            printf("Point anda sudah habis\n");
+        }
 }
 
 int main(){
