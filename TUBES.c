@@ -118,13 +118,14 @@ int main(){
 	
 	int pilihan1,point;
 	TotalBelanja();
+	point = hitung_poin(total);
 	Diskon();
 	printf("Total Pembelanjaan anda adalah  = %d\n", total);
 	printf("ingin tukar point?(ketik 1 untuk ya)\n");
 	scanf("%d",&pilihan1);
 
     if(pilihan1 == 1){
-        point = hitung_poin(total);
+        
         tukar_poin(point);
     }
 }
