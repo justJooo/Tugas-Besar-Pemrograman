@@ -189,12 +189,12 @@ void judul(){
     printf("**  **    ***     *****   *****  *****  \n");
     printf("** **    ** **   ***       ***   **  ** \n");
     printf("*****   *******   *****    ***   *****  \n");
-    printf("**  **  **   **      ***   ***   **   **\n");
-    printf("**  **  **   **  *****    *****  **   **\n");
+    printf("**  **  **   **      ***   ***   **  **\n");
+    printf("**  **  **   **  *****    *****  **  **\n");
     printf("===========================================\n");
 }
 int main(){
-	int temp,pilihan1,pil2,pil3;
+	int pilihan1,pil2,pil3;
     judul();
 	TotalBelanja();
 	point = hitung_poin(total);
