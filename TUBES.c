@@ -115,7 +115,7 @@ void tukar_poin (){
             printf("Point anda sudah habis\n");
         }
 }
-int cek_member(){
+void cek_member(){
     char str[1000];
     char *pos;
 
@@ -130,7 +130,7 @@ int cek_member(){
     if (fpointer == NULL)
     {
         fclose(fpointer);
-        printf("File doesn't exist\n");
+        printf("File tidak ditemukan!\n");
         fpointer = fopen("Daftar_Member.txt","a");
         fclose(fpointer);
         fpointer = fopen("Daftar_Member.txt","r");
