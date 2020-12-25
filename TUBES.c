@@ -2,40 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 
-int point, barang, harga, total, diskon, pembayaran, kembalian,a;
+int a;
 char nama[50];
 char path[100];
 
-void TotalBelanja()
+int Diskon(int total)
 {
-	printf("|==================== KASIR MINIMARKET X ====================|\n");
-	printf("|                                                            |\n");
-	printf("|---------------------- DATA PEMBELIAN ----------------------|\n");
-	printf("|>>          Silakan masukkan data dengan benar.           <<|\n");
-	printf("\n|| Masukan Jumlah Barang \t\t\t=\t    ||\n=>\t    ");
-	scanf("%d", &barang);
-	printf("|| Masukan Harga Barang \t\t\t=\t    ||\n=>\t    ");
-	scanf("%d", &harga);
-	total=barang*harga;
-	printf("|| Masukkan jumlah uang yang diberikan \t\t=\t    ||\n=> Rp. \t ");
-	scanf("%d", &pembayaran);
-	printf("|============================================================|\n");
-}
-void Diskon()
-{
+    int diskon;
 	if (total >= 75000 && total < 900000){
 		diskon = 10/100;
 		total=total-(total*10/100);
 		printf("\nSelamat Anda Mendapat Diskon sebesar 10 persen! Silakan Cek Total Belanja Anda.\n");
+        return total;
 
 	}
 	else if (total >= 900000){
 		diskon = 20/100;
 		total=total-(total*20/100);
 		printf("\nSelamat Anda Mendapat Diskon sebesar 20 persen! Silakan Cek Total Belanja Anda.\n");
+        return total;
 	}
 	else
 	printf("\nMaaf, Anda tidak mendapat Diskon. Silakan Berbelanja dengan minimal pembelian total 75000.\n");
+    return total;
 }
 
 int hitung_poin (int total_belanja){
@@ -48,7 +37,7 @@ struct merchandise
     char pilihan_warna[20];
 };
 
-void tukar_poin (){
+int tukar_poin (int point){
     int pilih,pil2,pilihan;
     struct merchandise gantungan_kunci,payung,boneka;
     gantungan_kunci.point = 2;
@@ -56,9 +45,7 @@ void tukar_poin (){
     boneka.point=7;
 
     printf("\n** Point total Anda : %d **\n",point);
-    printf("\nTukar point? (Ketik 1 untuk Ya dan 2 untuk Tidak) >> ");
-    scanf("%d",&pilihan);
-    while(pilihan == 1 && point > 0){
+    do{
         printf("Ingin tukar point dengan apa?\n");
         printf("1.Gantungan kunci (2 Point)\n");
         printf("2.Payung          (5 Point)\n");
@@ -69,7 +56,7 @@ void tukar_poin (){
         if (pilih == 1){
             if( point < gantungan_kunci.point){
                 printf("Maaf, Point Anda tidak mencukupi.\n");
-                exit(1);
+                break;
             }
             point -= gantungan_kunci.point;
             printf("==================================================\n");
@@ -82,7 +69,7 @@ void tukar_poin (){
         else if(pilih == 2){
             if(point < payung.point){
                printf("Maaf, Point Anda tidak mencukupi.\n");
-                exit(1);
+                break;
             }
             printf("Silakan pilih warna merchandise anda:\n");
             printf("1.Merah\n");
@@ -113,7 +100,7 @@ void tukar_poin (){
         else if(pilih == 3){
             if(point <boneka.point){
                printf("Maaf, Point Anda tidak mencukupi.\n");
-                exit(1);
+                break;
             }
             point -= boneka.point;
             printf("==================================================\n");
@@ -124,9 +111,11 @@ void tukar_poin (){
             scanf("%d",&pilihan);
     }
         }
+        while(pilihan == 1 && point > 0);
 	 if(point == 0){
             printf("Point Anda sudah habis. Silakan lakukan transaksi lain untuk menambah point.\n");
         }
+        return point;
 }
 typedef struct{//Perlu dirubah bila ingin di update
 	char Nama[50];
@@ -221,12 +210,9 @@ void Read(){
 	}
 }
 
-int Pembayaran_Kembalian ()
-{
+int Pembayaran_Kembalian (int total, int pembayaran){
+    int kembalian;
     if (total != 0){
-    printf("\nBerikut rincian pembayaran anda.\n");
-	printf("=== Total pembelanjaan Anda         : %d \t===\n", total);
-	printf("=== Jumlah barang yang Anda bayar   : %d \t===\n", barang);
 
 if (pembayaran < total){
 	printf("Uang anda tidak mencukupi. Mohon membayar sesuai dengan total pembelian Anda.");
@@ -235,7 +221,9 @@ if (pembayaran < total){
 else if (pembayaran > total){
     kembalian=pembayaran-total;
 	return kembalian;
-}}}
+}
+}
+}
 void cek_member(){
     char str[1000];
     char *pos;
@@ -244,7 +232,7 @@ void cek_member(){
     
 
     printf("Masukan nama : ");
-    scanf("%s", nama);
+    scanf("%s",nama);
 
     fpointer = fopen("Daftar_Member.txt", "r");
 
@@ -305,36 +293,153 @@ int get_point(){
     fclose(fpointer);
     return temp;
 }
+struct list
+{
+    char *nama;
+    int harga;
+};
+void menu_barang(struct list *barang){
+    
+
+    printf("+------------------------------------+\n");
+    printf("|1.%s     2.%s   3.%s      |\n",barang[0].nama,barang[1].nama,barang[2].nama);
+    printf("|4.%s  5.%s 6.%s     |\n",barang[3].nama,barang[4].nama,barang[5].nama);
+    printf("|7.%s 8.%s   9.%s|\n",barang[6].nama,barang[7].nama,barang[8].nama);
+    printf("+------------------------------------+\n");
+}
+int hitung_belanja (int banyak, int indeks, struct list *barang){
+    int subtotal = barang[indeks-1].harga * banyak;
+    return subtotal;
+}
+void update_to_file(char *nama_barang,int qty,int subtotal){
+FILE *fpointer;
+fpointer = fopen("struk_belanja.txt","a");
+fprintf(fpointer,"  %s           ",nama_barang);
+fprintf(fpointer,"%d              ",qty);
+fprintf(fpointer,"%d\n",subtotal);
+fclose(fpointer);
+}
+int persentase_diskon (int total){
+    int diskon;
+    if(total >= 75000 && total < 900000){
+        diskon = 10;
+        return diskon;
+    }
+    else if (total >= 900000){
+        diskon =20;
+        return diskon;
+    }
+    else diskon = 0;
+    return diskon;
+}
 int main(){
 	
-	int pilihan1,menu,pil2,pil3;
+	int pilihan1,menu,pil2,pil3,pil4,pil5,kuantitas,subtotal,pembayaran,point,diskonpersen;
+    int total = 0;
+    int flag = 0;
 	char Lanjut[2];
-    
-	TotalBelanja();
-    point = hitung_poin(total);
-	Diskon();
-	printf("\n|==================== KASIR MINIMARKET X ====================|\n");
+    FILE *fpointer;
+    struct list barang[9];
+    barang[0].nama = "Mie";
+    barang[0].harga = 2500;
+    barang[1].nama = "Gas (3kg)";
+    barang[1].harga = 25000;
+    barang[2].nama = "Odol";
+    barang[2].harga = 1200;
+    barang[3].nama = "Permen";
+    barang[3].harga = 500;
+    barang[4].nama = "Gas (5,5kg)";
+    barang[4].harga = 67500;
+    barang[5].nama = "Sabun";
+    barang[5].harga = 3000;
+    barang[6].nama = "Biskuit";
+    barang[6].harga = 10000;
+    barang[7].nama = "Teh celup";
+    barang[7].harga = 13500;
+    barang[8].nama = "Gula (1kg)";
+    barang[8].harga = 13000;
+    printf("\n|==================== KASIR MINIMARKET X ====================|\n");
 	printf("|                                                            |\n");
+     menu_barang(barang);
+    do{
+    printf("Pilih barang yang dibeli : ");
+    scanf("%d",&pil4);
+    if(pil4 > 9){
+        break;
+    }
+    barang->nama=barang[pil4-1].nama;
+    printf ("Kuantitas : ");
+    scanf("%d",&kuantitas);
+    subtotal = hitung_belanja(kuantitas,pil4,barang);
+    printf("Subtotal : %d\n",subtotal);
+    total += subtotal;
+    if(flag == 0){
+        fpointer = fopen("struk_belanja.txt","w");
+        fprintf(fpointer,"====================================================\n");
+        fprintf(fpointer,"====================MINIMARKET X====================\n");
+        fprintf(fpointer,"____________________________________________________\n");
+        fprintf(fpointer,"||   barang   ||   Jumlah   ||      Subtotal      ||\n");
+        fprintf(fpointer,"----------------------------------------------------\n");
+        fprintf(fpointer,"  %s           ",barang->nama);
+        fprintf(fpointer,"%d               ",kuantitas);
+        fprintf(fpointer,"%d\n",subtotal);
+        fclose(fpointer);
+        flag++;
+        fclose(fpointer);
+    }
+    else {
+        update_to_file(barang[pil4-1].nama,kuantitas,subtotal);
+    }
+    printf("Ada lagi ?\n");
+    printf("1.YES\n");
+    printf("2.NO\n");
+    scanf("%d",&pil5);
+    }
+    while (pil5 == 1);
+    point = hitung_poin(total);
+    diskonpersen = persentase_diskon(total);
+	total = Diskon(total);
+    printf("Total : %d\n",total);
+	printf ("Masukan uang pembayaran :");
+    scanf("%d",&pembayaran);
 	printf("|---------------------- NOTA PEMBELIAN ----------------------|\n");
 	printf("|>>                Data Pembelanjaan Customer              <<|\n");
 	printf("|| Pembelanjaan Anda adalah        = %d                  ||\n", total);
 	printf("|| Uang Pembayaran Anda adalah     = %d                 ||\n", pembayaran);
-	printf("\n|| Uang Kembalian Anda adalah      = %d                  ||\n", Pembayaran_Kembalian());
+	printf("\n|| Uang Kembalian Anda adalah      = %d                  ||\n", Pembayaran_Kembalian(total,pembayaran));
 	printf("|=================Terima Kasih telah berbelanja==============|\n");
 	printf("|                                                            |\n");
-	 printf("Member ?\n");
+    fpointer = fopen("struk_belanja.txt","a");
+    fprintf(fpointer,"====================================================\n");
+    if(diskonpersen == 0){
+        fprintf(fpointer,"Diskon :     --\n");
+    }
+    else{
+    fprintf(fpointer," Diskon :      %d%%\n",diskonpersen);
+    }
+    fprintf(fpointer," total :       %d\n",total);
+    fprintf(fpointer,"====================================================\n");
+    fclose(fpointer);
+	printf("Member ?\n");
     printf("1.YES\n");
     printf("2.NO\n");
     scanf("%d",&pil2);
     if(pil2 == 1)
         cek_member();
-    
     if (a == 0 || pil2 != 1){
     printf("\nIngin menjadi member?\n");
     printf("1.YES\n");
     printf("2.NO\n");
     scanf("%d",&pil3);
-    if (pil3 == 1)
+    if(pil2 != 1 && pil3 == 1){
+        printf("Masukan nama :");
+        scanf("%s",nama);
+        strcpy(path,nama);
+        strcat(path,".txt");
+        jadi_member();
+        a=0;
+    }
+    else if (pil3 == 1 && pil2 == 1)
     {
      jadi_member();  
     }
@@ -355,7 +460,7 @@ int main(){
 	scanf("%d",&pilihan1);
 
     if(pilihan1 == 1){
-        tukar_poin();
+        point = tukar_poin(point);
     }
     update_point(point);
     printf("Terima kasih sudah berbelanja\n");
