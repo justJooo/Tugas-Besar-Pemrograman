@@ -239,7 +239,7 @@ void cek_member(){
     if (fpointer == NULL)
     {
         fclose(fpointer);
-        printf("File tidak ditemukan!\n");
+        printf("Member tidak ditemukan!\n");
         fpointer = fopen("Daftar_Member.txt","a");
         fclose(fpointer);
         fpointer = fopen("Daftar_Member.txt","r");
@@ -433,19 +433,19 @@ int main(){
     fprintf(fpointer," Total :       %d\n",total);
     fprintf(fpointer,"====================================================\n");
     fclose(fpointer);
-	printf("Member ?\n");
+	printf("Member?\n");
     printf("1.Ya\n");
     printf("2.Tidak\n");
     scanf("%d",&pil2);
     if(pil2 == 1)
         cek_member();
     if (a == 0 || pil2 != 1){
-    printf("\nApakah Anda ngin menjadi Member?\n");
+    printf("\nApakah Anda ingin menjadi Member?\n");
     printf("1.Ya\n");
     printf("2.Tidak\n");
     scanf("%d",&pil3);
     if(pil2 != 1 && pil3 == 1){
-        printf("Masukan nama member: ");
+        printf("Masukan Nama : ");
         scanf("%s",nama);
         strcpy(path,nama);
         strcat(path,".txt");
