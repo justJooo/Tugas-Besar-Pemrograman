@@ -340,7 +340,7 @@ int main(){
     int flag = 0;
 	char Lanjut[2];
     FILE *fpointer;
-    struct list barang[9];
+    struct list barang[15];
     barang[0].nama = "Mie Instan";
     barang[0].harga = 2500;
     barang[1].nama = "Gas (3kg)";
