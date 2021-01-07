@@ -6,6 +6,54 @@ int a;
 char nama[50];
 char path[100];
 
+struct list
+{
+    char *nama;
+    int harga;
+};
+void menu_barang(struct list *barang){
+
+    printf("+------------------------------------------------------------+\n");
+    printf("|\t1.%s \t 2.%s \t  3.%s\t     |\n",barang[0].nama,barang[1].nama,barang[2].nama);
+    printf("|\t4.%s \t 5.%s \t  6.%s\t     |\n",barang[3].nama,barang[4].nama,barang[5].nama);
+    printf("|\t7.%s \t 8.%s \t  9.%s\t     |\n",barang[6].nama,barang[7].nama,barang[8].nama);
+    printf("|\t10.%s \t 11.%s \t  12.%s\t     |\n",barang[9].nama,barang[10].nama,barang[11].nama);
+    printf("|\t13.%s \t 14.%s \t  15.%s\t     |\n",barang[12].nama,barang[13].nama,barang[14].nama);
+    printf("+------------------------------------------------------------+\n");
+}
+int hitung_belanja (int banyak, int indeks, struct list *barang){
+    int subtotal = barang[indeks-1].harga * banyak;
+    return subtotal;
+}
+void update_to_file(char *nama_barang,int qty,int subtotal){
+FILE *fpointer;
+fpointer = fopen("struk_belanja.txt","a");
+fprintf(fpointer,"  %s           ",nama_barang);
+fprintf(fpointer,"%d              ",qty);
+fprintf(fpointer,"%d\n",subtotal);
+fclose(fpointer);
+}
+
+int Pembayaran_Kembalian (int total, int pembayaran){
+    int kembalian;
+    if (total != 0){
+
+if (pembayaran < total){
+	printf("Uang anda tidak mencukupi. Mohon membayar sesuai dengan total pembelian Anda.");
+    exit(1);
+}
+else if (pembayaran > total){
+    kembalian=pembayaran-total;
+	return kembalian;
+	
+}
+else if (pembayaran = total){
+	kembalian=0;
+	return kembalian;
+}
+}
+}
+
 int Diskon(int total)
 {
     int diskon;
@@ -27,10 +75,75 @@ int Diskon(int total)
     return total;
 }
 
+void cek_member(){
+    char str[1000];
+    char *pos;
+
+     FILE *fpointer;
+
+
+    printf("Masukan nama Member : ");
+    scanf("%s",nama);
+    fpointer = fopen("Daftar_Member.txt", "r");
+
+    if (fpointer == NULL)
+    {
+        fclose(fpointer);
+        printf("Member tidak ditemukan!\n");
+        fpointer = fopen("Daftar_Member.txt","a");
+        fclose(fpointer);
+        fpointer = fopen("Daftar_Member.txt","r");
+    }
+    while ((fgets(str,1000, fpointer)) != NULL){
+         pos = strstr(str, nama);
+
+         if (pos != NULL)
+        {
+            a = 1;
+            break;
+        }
+    }
+    fclose(fpointer);
+    if(a == 1){
+        printf("Nama Ditemukan.\n");
+        a = 1;
+    }
+    else
+    {
+        printf("Nama Tidak Ditemukan.\n");
+        a = 0;
+    }
+    fclose(fpointer);
+}
+void jadi_member(){
+
+FILE *fpointer;
+
+strcpy(path,nama);
+strcat(path,".txt");
+
+fpointer = fopen(path,"w");
+fprintf(fpointer,"0");
+fclose(fpointer);
+fpointer = fopen("Daftar_Member.txt","a");
+fprintf(fpointer,"%s\n",nama);
+fclose(fpointer);
+}
+
+int get_point(){
+    int temp;
+    FILE *fpointer;
+    fpointer = fopen(path,"r");
+    fscanf(fpointer,"%d",&temp);
+    fclose(fpointer);
+    return temp;
+}
+
 int hitung_poin (int total_belanja){
     int poin = total_belanja / 50000;
     return poin;
 }
+
 struct merchandise
 {
     int point;
@@ -118,7 +231,7 @@ int tukar_poin (int point){
         return point;
 }
 typedef struct{//Perlu dirubah bila ingin di update
-		char Nama[50];
+	char Nama[50];
 	char Member[20];
 	char Telp[13];
 	char Tanggal[10];
@@ -149,7 +262,7 @@ void Delete(){
 	PENJUALAN=fopen("Nota Penjualan.txt","r");
 	index=0;
 	while (!feof(PENJUALAN)){
-		fscanf(PENJUALAN,"%[^]%i_%s_%s_%[^\n]\n",&Penjualan[index].Nama,&Penjualan[index].ID,&Penjualan[index].Member,&Penjualan[index].Telp,&Penjualan[index].Tanggal);
+		fscanf(PENJUALAN,"%[^_]_%i_%s_%s_%[^\n]\n",&Penjualan[index].Nama,&Penjualan[index].ID,&Penjualan[index].Member,&Penjualan[index].Telp,&Penjualan[index].Tanggal);
 		fflush(stdin);
 		if(id!=Penjualan[index].ID){
 			index++;
@@ -160,7 +273,7 @@ void Delete(){
 	fclose(PENJUALAN);
 	PENJUALAN=fopen("Nota Penjualan.txt","a");
 	for(i=0;i<index;i++){
-		fprintf(PENJUALAN,"%s_%i_%s_%s\n",Penjualan[i].Nama,Penjualan[i].ID,Penjualan[i].Member,Penjualan[i].Telp),Penjualan[i].Tanggal;
+		fprintf(PENJUALAN,"%s_%i_%s_%s_%s\n",Penjualan[i].Nama,Penjualan[i].ID,Penjualan[i].Member,Penjualan[i].Telp),Penjualan[i].Tanggal;
 	}
 	fclose(PENJUALAN);
 }
@@ -173,7 +286,7 @@ void Update(){
 	PENJUALAN=fopen("Nota Penjualan.txt","r");
 	index=0;
 	while (!feof(PENJUALAN)){
-		fscanf(PENJUALAN,"%[^]%i_%[^]%[^]%[^\n]\n",&Penjualan[index].Nama,&Penjualan[index].ID,&Penjualan[index].Member,&Penjualan[index].Telp),&Penjualan[index].Tanggal;
+		fscanf(PENJUALAN,"%[^_]_%i_%[^_]_%[^_]_%[^\n]\n",&Penjualan[index].Nama,&Penjualan[index].ID,&Penjualan[index].Member,&Penjualan[index].Telp,&Penjualan[index].Tanggal);
 		fflush(stdin);
 		if(id==Penjualan[index].ID){
 			printf("Masukkan Nama Customer \t\t\t: ");scanf("%[^\n]",&Penjualan[index].Nama);fflush(stdin);
@@ -201,7 +314,7 @@ void Read(){
 	printf("\n");
 	PENJUALAN=fopen("Nota Penjualan.txt","r");
 	while (!feof(PENJUALAN)){
-		fscanf(PENJUALAN,"%[^]%i_%[^]%[^]%[^\n]\n",&Penjualan.Nama,&Penjualan.ID,&Penjualan.Member,&Penjualan.Telp,&Penjualan.Tanggal);
+		fscanf(PENJUALAN,"%[^_]_%i_%[^_]_%[^_]_%[^\n]\n",&Penjualan.Nama,&Penjualan.ID,&Penjualan.Member,&Penjualan.Telp,&Penjualan.Tanggal);
 		fflush(stdin);
 		if(id==Penjualan.ID){
 			printf("Nama Customer \t\t\t\t : %s\n",Penjualan.Nama);
@@ -211,119 +324,16 @@ void Read(){
 			printf("Tanggal Transaksi \t\t\t : %s\n",Penjualan.Tanggal);
 		}
 	}
+    fclose(PENJUALAN);
 }
 
-
-int Pembayaran_Kembalian (int total, int pembayaran){
-    int kembalian;
-    if (total != 0){
-
-if (pembayaran < total){
-	printf("Uang anda tidak mencukupi. Mohon membayar sesuai dengan total pembelian Anda.");
-    exit(1);
-}
-else if (pembayaran > total){
-    kembalian=pembayaran-total;
-	return kembalian;
-}
-}
-}
-void cek_member(){
-    char str[1000];
-    char *pos;
-
-     FILE *fpointer;
-
-
-    printf("Masukan nama Member : ");
-    scanf("%s",nama);
-
-    fpointer = fopen("Daftar_Member.txt", "r");
-
-    if (fpointer == NULL)
-    {
-        fclose(fpointer);
-        printf("Member tidak ditemukan!\n");
-        fpointer = fopen("Daftar_Member.txt","a");
-        fclose(fpointer);
-        fpointer = fopen("Daftar_Member.txt","r");
-    }
-    while ((fgets(str,1000, fpointer)) != NULL){
-         pos = strstr(str, nama);
-
-         if (pos != NULL)
-        {
-            a = 1;
-            break;
-        }
-    }
-    fclose(fpointer);
-    if(a == 1){
-        printf("Nama Ditemukan.\n");
-        a = 1;
-    }
-    else
-    {
-        printf("Nama Tidak Ditemukan.\n");
-        a = 0;
-    }
-    fclose(fpointer);
-}
-void jadi_member(){
-
-FILE *fpointer;
-
-strcpy(path,nama);
-strcat(path,".txt");
-
-fpointer = fopen(path,"w");
-fprintf(fpointer,"0");
-fclose(fpointer);
-fpointer = fopen("Daftar_Member.txt","a");
-fprintf(fpointer,"%s\n",nama);
-fclose(fpointer);
-}
 void update_point(int point){
     FILE *fpointer;
     fpointer = fopen(path,"w");
     fprintf(fpointer,"%d",point);
     fclose(fpointer);
 }
-int get_point(){
-    int temp;
-    FILE *fpointer;
-    fpointer = fopen(path,"r");
-    fscanf(fpointer,"%d",&temp);
-    fclose(fpointer);
-    return temp;
-}
-struct list
-{
-    char *nama;
-    int harga;
-};
-void menu_barang(struct list *barang){
 
-    printf("+------------------------------------------------------------+\n");
-    printf("|\t1.%s \t 2.%s \t  3.%s\t     |\n",barang[0].nama,barang[1].nama,barang[2].nama);
-    printf("|\t4.%s \t 5.%s \t  6.%s\t     |\n",barang[3].nama,barang[4].nama,barang[5].nama);
-    printf("|\t7.%s \t 8.%s \t  9.%s\t     |\n",barang[6].nama,barang[7].nama,barang[8].nama);
-    printf("|\t10.%s \t 11.%s \t  12.%s\t     |\n",barang[9].nama,barang[10].nama,barang[11].nama);
-    printf("|\t13.%s \t 14.%s \t  15.%s\t     |\n",barang[12].nama,barang[13].nama,barang[14].nama);
-    printf("+------------------------------------------------------------+\n");
-}
-int hitung_belanja (int banyak, int indeks, struct list *barang){
-    int subtotal = barang[indeks-1].harga * banyak;
-    return subtotal;
-}
-void update_to_file(char *nama_barang,int qty,int subtotal){
-FILE *fpointer;
-fpointer = fopen("struk_belanja.txt","a");
-fprintf(fpointer,"  %s           ",nama_barang);
-fprintf(fpointer,"%d              ",qty);
-fprintf(fpointer,"%d\n",subtotal);
-fclose(fpointer);
-}
 int persentase_diskon (int total){
     int diskon;
     if(total >= 75000 && total < 900000){
@@ -377,7 +387,7 @@ int main(){
     barang[14].harga = 37500;
     printf("\n|==================== KASIR MINIMARKET X ====================|");
 	printf("\n|                                                            |\n");
-     menu_barang(barang);
+    menu_barang(barang);
     do{
     printf("Masukkan nomor barang yang dibeli : ");
     scanf("%d",&pil4);
